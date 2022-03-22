@@ -16,13 +16,13 @@ def on_message(client, userdata, message):
 
 if __name__ == "__main__":
 	config = configparser.RawConfigParser()
-	config.read('broker.properties')
+	config.read('ConfigFile.properties')
 
 	client = mqtt.Client("subscriber")
 	client.on_message = on_message
 
 	client.connect(config.get('Broker', 'broker_address'), port=int(config.get('Broker', 'broker_port')))
-	client.subscribe("house/light")
+	client.subscribe("itis/team1")
 	client.loop_start()
 
 	try:
