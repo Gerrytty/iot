@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-service ServerStreaming {
-   rpc GetServerResponse(Message) returns (stream Message) {}
-}
-
-message Message {
-  int32 message = 1;
-}

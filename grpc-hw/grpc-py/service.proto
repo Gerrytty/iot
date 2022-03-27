@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+service Bidirectional {
+   rpc GetServerResponse(stream Message) returns (stream Message) {}
+}
+
+service ServerStreaming {
+   rpc GetServerResponse(Message) returns (stream Message) {}
+}
+
+service ClientStreaming {
+   rpc GetServerResponse(stream Message) returns (Message) {}
+}
+
+service Unary {
+   rpc GetServerResponse(Message) returns (Message) {}
+}
+
+message Message {
+  double message = 1;
+}

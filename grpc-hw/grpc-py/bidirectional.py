@@ -1,8 +1,9 @@
 from __future__ import print_function
 
 import grpc
-import bidirectional_pb2_grpc as bidirectional_pb2_grpc
-import bidirectional_pb2 as bidirectional_pb2
+import service_pb2_grpc as bidirectional_pb2_grpc
+import service_pb2 as bidirectional_pb2
+
 
 def make_message(message):
     return bidirectional_pb2.Message(message=message)
@@ -16,7 +17,7 @@ def generate_messages(number_array):
 def send_message(stub, arr):
     responses = stub.GetServerResponse(generate_messages(arr))
     for response in responses:
-        print(f"New maximum in array {response.message}")
+        print(f"New maximum in {arr} = {response.message}")
 
 
 def run(arr):

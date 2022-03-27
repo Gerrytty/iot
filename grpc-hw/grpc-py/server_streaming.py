@@ -1,8 +1,8 @@
 from __future__ import print_function
 
 import grpc
-import serverstreaming_pb2_grpc
-import serverstreaming_pb2
+import service_pb2_grpc as serverstreaming_pb2_grpc
+import service_pb2 as serverstreaming_pb2
 
 
 def make_message(message):
@@ -11,6 +11,7 @@ def make_message(message):
 
 def send_message(stub, num):
     responses = stub.GetServerResponse(make_message(num))
+    print(f"Factoring of {num}:")
     for response in responses:
         print(f"{response.message}")
 

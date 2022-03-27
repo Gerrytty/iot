@@ -1,8 +1,8 @@
 from __future__ import print_function
 
 import grpc
-import clientstreaming_pb2_grpc
-import clientstreaming_pb2
+import service_pb2_grpc as clientstreaming_pb2_grpc
+import service_pb2 as clientstreaming_pb2
 
 
 def make_message(message):
@@ -16,7 +16,7 @@ def generate_messages(number_array):
 
 def send_message(stub, arr):
     response = stub.GetServerResponse(generate_messages(arr))
-    print(f"STD of arr = {response.message}")
+    print(f"STD of {arr} = {response.message}")
 
 
 def run(arr):
