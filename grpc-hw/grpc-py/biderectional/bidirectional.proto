@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+service Bidirectional {
+   rpc GetServerResponse(stream Message) returns (stream Message) {}
+}
+
+message Message {
+  int32 message = 1;
+}
