@@ -26,6 +26,4 @@ if __name__ == "__main__":
         # send message to kafka broker
         arr = [led_sensor.led, led_sensor.led]
         producer.produce([json.dumps([ob.__dict__ for ob in arr])], "topic_1")
-        print(led_sensor.led.value)
-        print("message sent")
         time.sleep(1)

@@ -1,11 +1,13 @@
 import dash
-from dash.dependencies import Output, Input
+from dash.dependencies import Output, Input, State
 from dash import dcc
 from dash import html
 import plotly
 import plotly.graph_objs as go
+from time_to_alarm import AlarmTime
 
 from consumer import SensorsUpdater
+from kafka_producer import KafkaProducer
 
 ARR_SIZE = 200
 MAX_Y = 100
@@ -14,19 +16,30 @@ c = 0
 val_y = 0
 prev_size = 0
 
+sent = True
+
 app = dash.Dash(__name__)
 sensor_updater = SensorsUpdater("topic_1", ["localhost:9092"])
 sensor_updater.endless_consume()
+producer = KafkaProducer("localhost:9092")
 
 @app.callback(
     Output('live-graph', 'figure'),
-    [Input('graph-update', 'n_intervals')],
+    [Input('graph-update', 'n_intervals'), Input("input_{}".format("text"), "value")],
 )
-def update_graph_scatter(n):
+def update_graph_scatter(n, input_time):
     global prev_size
+    global sent
+
+    if input_time is not None and len(input_time) == 5 and sent:
+        producer.send_msg(AlarmTime(input_time).to_JSON(), "topic_2")
+        sent = False
+
+    if len(input_time) != 5:
+        sent = True
 
     if prev_size != len(sensor_updater.arr_of_vals_of_sensor):
-        print("New alement ploting...")
+        print("New element plotting...")
 
         global yy
         global c
@@ -68,8 +81,15 @@ if __name__ == '__main__':
             dcc.Graph(id='live-graph', animate=False),
             dcc.Interval(
                 id='graph-update',
-                interval=100,
+                interval=900,
             ),
+            # html.Button('Submit', id='submit-val', n_clicks=0),
+            dcc.Input(
+                id="input_{}".format("text"),
+                type="text",
+                placeholder="input type {}".format("text"),
+            ),
+            # html.Button('Submit', id='submit-val', n_clicks=0),
         ]
     )
 
