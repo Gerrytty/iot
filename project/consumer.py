@@ -7,9 +7,10 @@ class SensorsUpdater:
     def __init__(self, topic_name, bootstrap_servers):
         self.arr_of_vals_of_sensor = []
         self.consumer = KafkaConsumer(topic_name, bootstrap_servers=bootstrap_servers)
+        self.stop = False
 
     def consume_and_update(self):
-        while True:
+        while not self.stop:
             for message in self.consumer:
                 print(message)
                 msg = json.loads(message.value.decode("utf-8"))

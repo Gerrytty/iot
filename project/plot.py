@@ -19,9 +19,9 @@ prev_size = 0
 sent = True
 
 app = dash.Dash(__name__)
-sensor_updater = SensorsUpdater("topic_1", ["localhost:9092"])
+sensor_updater = SensorsUpdater("topic_1", ["192.168.88.241:9092"])
 sensor_updater.endless_consume()
-producer = KafkaProducer("localhost:9092")
+producer = KafkaProducer("192.168.88.241:9092")
 
 @app.callback(
     Output('live-graph', 'figure'),
@@ -33,13 +33,18 @@ def update_graph_scatter(n, input_time):
 
     if input_time is not None and len(input_time) == 5 and sent:
         producer.send_msg(AlarmTime(input_time).to_JSON(), "topic_2")
+        print("Send new time to topic 2", sent, len(input_time))
         sent = False
 
-    if len(input_time) != 5:
+    if input_time is not None:
+        print(len(input_time))
+
+    if input_time is not None and len(input_time) != 5:
+        print("Len != 5")
         sent = True
 
     if prev_size != len(sensor_updater.arr_of_vals_of_sensor):
-        print("New element plotting...")
+        # print("New element plotting...")
 
         global yy
         global c

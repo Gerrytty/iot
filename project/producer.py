@@ -18,12 +18,16 @@ if __name__ == "__main__":
     alarm.start_alarm()
 
     # producer
-    producer = KafkaProducer("localhost:9092")
+    producer = KafkaProducer("192.168.88.241:9092")
 
     arr = [led_sensor.led, led_sensor.led]
 
     while True:
-        # send message to kafka broker
-        arr = [led_sensor.led, led_sensor.led]
-        producer.produce([json.dumps([ob.__dict__ for ob in arr])], "topic_1")
-        time.sleep(1)
+        try:
+            # send message to kafka broker
+            arr = [led_sensor.led, led_sensor.led]
+            # producer.produce([json.dumps([ob.__dict__ for ob in arr])], "topic_1")
+            time.sleep(1)
+        except KeyboardInterrupt:
+            alarm.stop()
+            break

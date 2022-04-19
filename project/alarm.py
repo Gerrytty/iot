@@ -8,13 +8,14 @@ class Alarm:
     def __init__(self, time_to_alarm, light_sensor, led):
         self.light_sensor = light_sensor
         self.led = led
-        # self.time_to_alarm = time_to_alarm
         self.hour_to_alarm = time_to_alarm[:2]
         self.minute_to_alarm = time_to_alarm[3:]
         self.was_alarm = False
-        self.alarm_time_updater = TimeUpdater("topic_2", ["localhost:9092"])
+        self.alarm_time_updater = TimeUpdater("topic_2", ["192.168.88.241:9092"])
         self.alarm_time_updater.endless_consume()
         self._time_to_alarm = time_to_alarm
+        self.thread_to_alarm = None
+        self.stop_app = False
 
     @property
     def time_to_alarm(self):
@@ -35,7 +36,8 @@ class Alarm:
         return self._time_to_alarm
 
     def start(self):
-        while True:
+        while not self.stop_app:
+            print(self.alarm_time_updater.time_to_alarm)
             if self.alarm_time_updater.time_to_alarm is not None:
                 self.time_to_alarm = self.alarm_time_updater.time_to_alarm
                 self.was_alarm = False
@@ -51,12 +53,16 @@ class Alarm:
             time.sleep(1)
 
     def start_alarm(self):
-        new_thread = Thread(target=self.start)
-        new_thread.start()
-
-        if self.was_alarm:
-            new_thread.join()
+        self.thread_to_alarm = Thread(target=self.start)
+        self.thread_to_alarm.start()
 
     def alarm(self):
-        if self.light_sensor.is_dark():
-            self.led.on()
+        self.led.on()
+        # if self.light_sensor.is_dark():
+        #     self.led.on()
+
+    def stop(self):
+        self.stop_app = True
+        self.alarm_time_updater.stop = True
+        self.thread_to_alarm.join()
+        self.alarm_time_updater.thread.join()
