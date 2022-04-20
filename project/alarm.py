@@ -5,8 +5,7 @@ from time_updater import TimeUpdater
 
 
 class Alarm:
-    def __init__(self, time_to_alarm, light_sensor, led):
-        self.light_sensor = light_sensor
+    def __init__(self, time_to_alarm, led):
         self.led = led
         self.hour_to_alarm = time_to_alarm[:2]
         self.minute_to_alarm = time_to_alarm[3:]
@@ -37,7 +36,7 @@ class Alarm:
 
     def start(self):
         while not self.stop_app:
-            print(self.alarm_time_updater.time_to_alarm)
+            print(self.time_to_alarm)
             if self.alarm_time_updater.time_to_alarm is not None:
                 self.time_to_alarm = self.alarm_time_updater.time_to_alarm
                 self.was_alarm = False
@@ -58,8 +57,6 @@ class Alarm:
 
     def alarm(self):
         self.led.on()
-        # if self.light_sensor.is_dark():
-        #     self.led.on()
 
     def stop(self):
         self.stop_app = True

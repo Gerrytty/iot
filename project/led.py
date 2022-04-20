@@ -3,7 +3,7 @@ import time
 from threading import Thread
 
 class Led(Thread):
-    def __init__(self, led, red_pin=16, green_pin=24):
+    def __init__(self, led, red_pin=21, green_pin=20):
         super().__init__()
         self.led = led
         GPIO.setmode(GPIO.BCM)
@@ -25,6 +25,8 @@ class Led(Thread):
             self.green.start((t)) #start green led
             if t < 100:
                 t += 5
+            else:
+                self.off()
             time.sleep(1)
 
         print("Led on")
@@ -34,4 +36,3 @@ class Led(Thread):
         self.green.stop()
         GPIO.cleanup()
         print("Led off")
-        self.join()
